@@ -71,6 +71,9 @@ def optimalWriteOrder():
       # reason.
       if CREATE_BUCKET.drain(1):
         yield (metric, datapoints, dbFilePath, dbFileExists)
+      else:
+        instrumentation.increment('droppedCreates')
+        log.debug('dropping metric %s due to MAX_CREATES_PER_MINUTE' % metric)
       continue
 
     yield (metric, datapoints, dbFilePath, dbFileExists)
